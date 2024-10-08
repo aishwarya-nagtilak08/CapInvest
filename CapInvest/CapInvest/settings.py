@@ -37,9 +37,27 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
     'rest_framework',
+    'rest_framework.authtoken',
+    'dj_rest_auth',
     'custapp',
 ]
+
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',    # Default Django backend
+    'allauth.account.auth_backends.AuthenticationBackend',  # allauth specific backend
+)
+
+# Additional allauth settings (customize as needed)
+ACCOUNT_EMAIL_VERIFICATION = "none"  # Set to "mandatory" if you need email verification
+ACCOUNT_AUTHENTICATION_METHOD = "username"  # Can be "email" or "username_email"
+ACCOUNT_EMAIL_REQUIRED = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -49,6 +67,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'CapInvest.urls'
@@ -136,3 +155,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'custapp.serializers.CustomerRegisterSerializer',
+    # 'PASSWORD_CHANGE_SERIALIZER': 'kbapp.customer.serializers.CustomerPasswordChangeSerializer',
+}
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'custapp.serializers.CustomerRegisterSerializer',
+}
