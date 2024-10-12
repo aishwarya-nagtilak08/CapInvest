@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'dj_rest_auth',
+    'dj_rest_auth.registration',
     'custapp',
 ]
 
@@ -54,10 +55,12 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',  # allauth specific backend
 )
 
-# Additional allauth settings (customize as needed)
-ACCOUNT_EMAIL_VERIFICATION = "none"  # Set to "mandatory" if you need email verification
-ACCOUNT_AUTHENTICATION_METHOD = "username"  # Can be "email" or "username_email"
-ACCOUNT_EMAIL_REQUIRED = True
+# Authentication settings
+AUTH_USER_MODEL = 'custapp.Customer'
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_ADAPTER = "allauth.account.adapter.DefaultAccountAdapter"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -156,10 +159,5 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'custapp.serializers.CustomerRegisterSerializer',
-    # 'PASSWORD_CHANGE_SERIALIZER': 'kbapp.customer.serializers.CustomerPasswordChangeSerializer',
-}
-REST_AUTH_REGISTER_SERIALIZERS = {
-    'REGISTER_SERIALIZER': 'custapp.serializers.CustomerRegisterSerializer',
-}
+ACCOUNT_USERNAME_MIN_LENGTH = 10
+ACCOUNT_USERNAME_MAX_LENGTH = 10

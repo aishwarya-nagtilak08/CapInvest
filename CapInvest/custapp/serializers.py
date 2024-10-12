@@ -1,17 +1,23 @@
-from rest_framework import serializers
+import logging
+from datetime import datetime
 
-class CustomerRegisterSerializer(serializers.Serializer):
-    username = serializers.CharField(required=False)  # , write_only=True)
-    mobilenumber = serializers.CharField(required=True)
-    date_of_birth = serializers.DateField(required=True,format="%d/%m/%Y",input_formats=["%d/%m/%Y"], error_messages={"invalid": "Date must be in DD/MM/YYYY format."})
-    partner_customer_id = serializers.CharField(required=False, max_length=32)
-    partner_code = serializers.CharField(required=False, max_length=16)
-    platform = serializers.CharField(required=False, max_length=30)
-    customer_flag = serializers.CharField(required=False)
-    email = serializers.EmailField(required=False, allow_null=True, allow_blank=True, default="")
-    client_id = serializers.CharField(required=True,max_length=16)
-    digio_flow = serializers.CharField(required=False, allow_null=True, max_length=30)
-    is_transaction_allowed = serializers.BooleanField(required=False, allow_null=True)
-    arn = serializers.CharField(required=False, max_length=20, allow_null=True, allow_blank=True)
-    ownerid = serializers.CharField(required=False, allow_null=True, allow_blank=True)
-    source = serializers.CharField(required=False, allow_null=True, allow_blank=True)
+from django.conf import settings as SETTINGS
+from django.db import IntegrityError
+from allauth.account.adapter import get_adapter
+from rest_framework import serializers
+from rest_auth.serializers import PasswordChangeSerializer
+
+from custapp.models import Customer
+
+logger = logging.getLogger(__name__)
+
+class CustomerPasswordChangeSerializer(PasswordChangeSerializer):
+    def validate_old_password(self, value):
+        if self.user.is_password_set:
+            value = super(CustomerPasswordChangeSerializer, self).validate_old_password(value)
+        else:
+            self.user.is_password_set = True
+            self.user.save()
+        return value
+
+

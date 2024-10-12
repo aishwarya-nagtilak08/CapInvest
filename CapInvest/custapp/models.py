@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.contrib.auth.models import AbstractUser
 
 class BaseModel(models.Model):
     is_active = models.BooleanField(default=True)
@@ -13,7 +14,7 @@ class BaseModel(models.Model):
         abstract = True
 
 
-class Customer(BaseModel):
+class Customer(AbstractUser, BaseModel):
     customer_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100, null=True, blank=True)
