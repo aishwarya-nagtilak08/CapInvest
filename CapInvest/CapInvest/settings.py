@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -97,11 +98,18 @@ WSGI_APPLICATION = 'CapInvest.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DB_NAME = "capinvest_dev"
-DB_USER = "postgres"
-DB_PASSWORD = "root"
-DB_HOST = "localhost"
-DB_PORT = "5432"
+# DB_NAME = "capinvest_dev"
+# DB_USER = "postgres"
+# DB_PASSWORD = "root"
+# DB_HOST = "localhost"
+# DB_PORT = "5432"
+# SCHEME = "dmcap"
+
+DB_NAME = os.getenv("DB_NAME", "capinvest_dev")
+DB_USER = os.getenv("DB_USER", "postgres")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "root")
+DB_HOST = os.getenv("DB_HOST", "db")  # Use 'db' to match service name from docker-compose file
+DB_PORT = os.getenv("DB_PORT", "5432")
 SCHEME = "dmcap"
 
 DATABASES = {
@@ -110,8 +118,8 @@ DATABASES = {
         'NAME': DB_NAME,
         'USER': DB_USER,
         'PASSWORD': DB_PASSWORD,
-        'HOST': DB_HOST,  # Or the IP address of your PostgreSQL server
-        'PORT': DB_PORT,  # Default PostgreSQL port
+        'HOST': DB_HOST,
+        'PORT': DB_PORT,
         'OPTIONS': {
             'options': f'-c search_path={SCHEME}'
         },
@@ -161,3 +169,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 ACCOUNT_USERNAME_MIN_LENGTH = 10
 ACCOUNT_USERNAME_MAX_LENGTH = 10
+
+
+CLIENT_ID_LIST = ['web', 'WEB', 'Web']
+

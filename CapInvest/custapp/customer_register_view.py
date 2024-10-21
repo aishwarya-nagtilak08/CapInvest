@@ -15,9 +15,8 @@ class CustomerRegistrationView(RegisterView):
     def create(self, request, *args, **kwargs):
         data = request.data
         serializer = self.get_serializer(data=data)
-        print(serializer, type(serializer))
         if serializer.is_valid():
-            return Response({"data":"data"})
-        return Response({"data":data})
+            return Response({"data": serializer.data})
+        return Response({"Invalid":serializer.errors})
     
     

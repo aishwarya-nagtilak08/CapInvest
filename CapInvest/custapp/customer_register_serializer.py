@@ -34,14 +34,14 @@ class CustomerRegisterSerializer(serializers.Serializer):
         return username
 
     def validate_platform(self, platform):
-        if platform not in (''):
+        if platform not in ('web'):
             raise serializers.ValidationError(
                 "Enter Valid platform from Platform List %s" % 'SIGUNP_PLATFORM_CHOICES_LIST')
         return platform
 
     def validate_partner_code(self, partner_code):
 
-        if partner_code not in (''):
+        if partner_code not in ('WEB'):
             raise serializers.ValidationError("partner_code Should be %s" % '')
 
         return partner_code
@@ -76,9 +76,6 @@ class CustomerRegisterSerializer(serializers.Serializer):
                 user_obj.platform = self.cleaned_data.get('platform')
                 updated = True
 
-            # TO Do NTB in bfl if bfl NTB changes to ETB few days later , shall we update again in register
-            # cust falg and partner cust flag not matching and it was earlier 0  for BFDL and BFL
-            # In case of ETB , then do not change partner_customer_id
             partner_code = partner_code.upper()
             if partner_code == "BFL":
                 if user_obj.partner_customer_flag != customer_flag and customer_flag == "1":
@@ -86,8 +83,6 @@ class CustomerRegisterSerializer(serializers.Serializer):
                     user_obj.partner_customer_id = partner_customer_id
                     user_obj.partner_code = partner_code
                     updated = True
-
-                # if it is NTB then bfdl will give or bfl will give falg to be used to set cust_reference_id
                 if user_obj.partner_customer_flag != customer_flag and customer_flag == "0":
                     user_obj.partner_customer_ref_id = partner_customer_id
                     user_obj.partner_customer_flag = customer_flag
@@ -162,9 +157,7 @@ class CustomerRegisterSerializer(serializers.Serializer):
             try:
                 if partner_code == "BFL":
                     user_obj.partner_customer_flag = customer_flag
-                    # source_customer_id nee to change to partner_customer_id
-                    # chandni will give logic to set customer refrence TODO : ASHWINI
-                    if customer_flag == "0":  # if it is NTB then bfdl will give or bfl will give falg to be used to set cust_reference_id
+                    if customer_flag == "0":  
                         user_obj.partner_customer_ref_id = partner_customer_id
                     elif customer_flag == "1":
                         user_obj.partner_customer_id = partner_customer_id
