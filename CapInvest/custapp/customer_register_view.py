@@ -16,7 +16,8 @@ class CustomerRegistrationView(RegisterView):
         data = request.data
         serializer = self.get_serializer(data=data)
         if serializer.is_valid():
-            return Response({"data": serializer.data})
+            serializer.save(request=request)  
+            return Response({"code":"100", "message":"User created successfully", "data": serializer.data})
         return Response({"Invalid":serializer.errors})
     
     

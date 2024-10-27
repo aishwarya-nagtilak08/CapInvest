@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 from pathlib import Path
+from datetime import datetime
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -72,6 +73,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'custapp.middlewares.ResponseTimeLogMiddleware',
 ]
 
 ROOT_URLCONF = 'CapInvest.urls'
@@ -108,7 +110,7 @@ WSGI_APPLICATION = 'CapInvest.wsgi.application'
 DB_NAME = os.getenv("DB_NAME", "capinvest_dev")
 DB_USER = os.getenv("DB_USER", "postgres")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "root")
-DB_HOST = os.getenv("DB_HOST", "db")  # Use 'db' to match service name from docker-compose file
+DB_HOST = os.getenv("DB_HOST", "localhost")  # Use 'db' to match service name from docker-compose file
 DB_PORT = os.getenv("DB_PORT", "5432")
 SCHEME = "dmcap"
 
@@ -173,3 +175,39 @@ ACCOUNT_USERNAME_MAX_LENGTH = 10
 
 CLIENT_ID_LIST = ['web', 'WEB', 'Web']
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+SERVICE_NAME = 'CapInvestService'
+
+current_date = datetime.now().strftime('%Y-%m-%d')
+LOG_DIR = BASE_DIR
+LOG_FILE = os.path.join(LOG_DIR, f'{SERVICE_NAME}_{current_date}_root_log.log')
+
+print("LOG file location is :-------", LOG_FILE)
+LOGLEVEL = 'DEBUG'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': LOGLEVEL,
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': LOG_FILE,
+            'level': LOGLEVEL,
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['console', 'file'],
+        'level': LOGLEVEL,
+    },
+}
