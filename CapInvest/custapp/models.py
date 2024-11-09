@@ -26,3 +26,18 @@ class Customer(AbstractUser, BaseModel):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
+
+class Funds(BaseModel):
+    FUND_TYPE = (
+        ('OPN', 'Open'),
+        ('CLS', 'Closed'),
+        ('INT', 'Interval'),
+        ('OTH', 'Other'),
+        )
+    fund_id = models.AutoField(primary_key=True)
+    fund_name = models.CharField(max_length=100, blank=True, null=True)
+    fund_category = models.CharField(max_length=100, blank=True, null=True)
+    description = models.CharField(max_length=400, blank=True, null=True)
+    fund_type = models.CharField(choices=FUND_TYPE, blank=True, null=True)
+    customers = models.ManyToManyField(Customer, related_name="customers")
+    
