@@ -50,6 +50,11 @@ INSTALLED_APPS = [
     'custapp',
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS':'CapInvest.pagination_utils.CustomPageNumberPagination',
+    'PAGE_SIZE': 10,
+}
+
 SITE_ID = 1
 
 AUTHENTICATION_BACKENDS = (
